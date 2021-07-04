@@ -75,32 +75,47 @@ class PostController extends Controller
      */
     public function show(string $slug)
     {
-       $post = Post::where("slug", $slug)->firstOrFail();
+        $post = Post::where("slug", $slug)->firstOrFail();
 
-       return view('post.show')->with('post',$post);
+        return view('post.show')->with('post', $post);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param int $id
+     * @param string $slug
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(string $slug)
     {
-        //
+        $post = Post::where("slug", $slug)->firstOrFail();
+        return view('post.edit')->with('post', $post);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param int $id
+     * @param string $slug
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, string $slug)
     {
-        //
+        $validatedRequest = $this->validate($request,
+            [
+                'title'=>'required|max:255',
+                'content'=>'required'
+            ]
+        );
+        $post = Post::where('slug',$slug)->first();
+        $post->title = $validatedRequest['title'];
+        $post->slug = Str::slug($validatedRequest['title']);
+        $post->content = $validatedRequest['content'];
+
+        $post->save();
+        $post->refresh();
+
+        return redirect('/');
     }
 
     /**
