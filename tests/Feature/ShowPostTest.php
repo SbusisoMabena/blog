@@ -20,4 +20,12 @@ class ShowPostTest extends TestCase
 
         $response->assertStatus(200);
     }
+
+    public function test_single_post_screen_redirects_to_404_page_when_the_post_does_not_exitst()
+    {
+        $response = $this->get("post/a-slug-that-does-not-exist");
+
+        $response->assertStatus(404);
+    }
+
 }
