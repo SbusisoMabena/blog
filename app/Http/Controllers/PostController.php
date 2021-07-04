@@ -70,12 +70,14 @@ class PostController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param int $id
+     * @param string $slug
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(string $slug)
     {
-        //
+       $post = Post::where("slug", $slug)->first();
+
+       return view('post.show')->with('post',$post);
     }
 
     /**
