@@ -6,7 +6,7 @@
     </x-slot>
 
     <a href="post/create" class="button is-primary">Create Post</a>
-    <div class="columns">
+    <div class="columns is-multiline">
         @foreach($posts as $post)
             <div class="column is-4">
                 <div class="card mt-2">
