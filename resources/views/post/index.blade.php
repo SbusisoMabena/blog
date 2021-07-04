@@ -15,7 +15,7 @@
                     </div>
                     <div class="card-content pt-1">
                         <div class="content-summary mb-2">
-                            {{$post->content}}
+                            {{Str::words($post->content,40)}}
                         </div>
                         <div class="media-content">
                             <div class="columns">
