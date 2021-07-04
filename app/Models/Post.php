@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Post extends Model
 {
     use HasFactory;
+    protected $fillable = ['title', 'content', 'slug', "user_id"];
 
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {

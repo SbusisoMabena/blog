@@ -5,6 +5,7 @@
         </h2>
     </x-slot>
 
+    <a href="post/create" class="button is-primary">Create Post</a>
     <div class="columns">
         @foreach($posts as $post)
             <div class="column is-4">

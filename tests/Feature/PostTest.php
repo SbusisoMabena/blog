@@ -38,8 +38,7 @@ class PostTest extends TestCase
         $post = Post::all()->first();
         $response = $this->get('/post');
 
-        $response->assertSeeText($post->title)
-            ->assertDontSeeText("edit");
+        $response->assertSeeText($post->title);
     }
 
     public function test_posts_screen_has_edit_and_detele_options_when_the_user_is_logged_in_and_they_own_the_post()
