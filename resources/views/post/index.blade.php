@@ -27,11 +27,21 @@
                             </div>
                             <a href="{{"post/".$post->slug}}">read more...</a>
                         </div>
+                        @if(\Illuminate\Support\Facades\Auth::check() && $post->user_id === \Illuminate\Support\Facades\Auth::user()->id)
+                            <div class="columns">
+                                <div class="column">
+                                    <a href="post/{{$post->slug}}/edit">edit</a>
+                                </div>
+                                <div class=" column">
+                                    <form method="POST" action="post/{{$post->slug}}">
+                                        @csrf
+                                        @method('delete')
+                                        <button type="submit" class="is-link">delete</button>
+                                    </form>
+                                </div>
+                            </div>
+                        @endif
                     </div>
-                    @if(\Illuminate\Support\Facades\Auth::check() && $post->user_id === \Illuminate\Support\Facades\Auth::user()->id)
-                        edit
-                        delete
-                    @endif
                 </div>
             </div>
         @endforeach
