@@ -5,7 +5,14 @@
         </h2>
     </x-slot>
 
-    <a href="post/create" class="button is-primary">Create Post</a>
+    <a href="post/create" class="button is-primary mt-2">Create Post</a>
+    @if(\Illuminate\Support\Facades\Session::has('success-message'))
+        <article class="message is-primary mt-2">
+            <div class="message-header">
+                <p>{{\Illuminate\Support\Facades\Session::get('success-message')}}</p>
+            </div>
+        </article>
+    @endif
     <div class="columns is-multiline">
         @foreach($posts as $post)
             <div class="column is-4">

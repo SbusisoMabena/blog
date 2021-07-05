@@ -103,11 +103,11 @@ class PostController extends Controller
     {
         $validatedRequest = $this->validate($request,
             [
-                'title'=>'required|max:255',
-                'content'=>'required'
+                'title' => 'required|max:255',
+                'content' => 'required'
             ]
         );
-        $post = Post::where('slug',$slug)->first();
+        $post = Post::where('slug', $slug)->first();
         $post->title = $validatedRequest['title'];
         $post->slug = Str::slug($validatedRequest['title']);
         $post->content = $validatedRequest['content'];
@@ -121,11 +121,20 @@ class PostController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $id
+     * @param string $slug
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(string $slug)
     {
-        //
+        $post = Post::where('slug', $slug)->first();
+        if (!isset($post)) {
+            return redirect('/');
+        }
+        if ($post->user_id === Auth::user()->id) {
+            $post->delete();
+            return redirect('/')->with('success-message', "Your post has been deleted");
+        }
+
+        abort(403, "Unauthorised delete");
     }
 }

@@ -110,4 +110,52 @@ class PostTest extends TestCase
             ]);
         $response->assertSessionHasErrors(['title','content']);
     }
+
+    public function test_delete_will_redirect_to_the_main_page_with_a_message_when_successful()
+    {
+        $this->seed();
+        $user = User::all()->first();
+        $post = $user->post->first();
+
+        $response = $this->actingAs($user)
+            ->delete("post/{$post->slug}");
+
+        $response->assertSessionHas('success-message', "Your post has been deleted");
+    }
+
+    public function test_delete_does_not_allow_a_user_to_delete_a_post_that_does_not_belong_to_them()
+    {
+        $this->seed();
+        $user = User::all()->first();
+        $post = $user->post->first();
+
+        $user2 = User::factory()->create();
+
+        $response = $this->actingAs($user2)
+            ->delete("post/{$post->slug}");
+
+        $response->assertStatus(403);
+    }
+
+    public function test_delete_redirects_the_user_when_they_are_trying_to_delete_a_post_that_does_not_exist()
+    {
+        $this->withoutExceptionHandling();
+        $this->seed();
+        $user = User::all()->first();
+
+        $response = $this->actingAs($user)
+            ->delete("post/does-not-exist}");
+
+        $response->assertRedirect('/');
+    }
+
+    public function test_edit_does_not_allow_a_user_to_edit_a_post_that_does_not_belong_to_them()
+    {
+        self::markTestIncomplete();
+    }
+
+    public function test_edit_creates_a_post_that_does_not_exist()
+    {
+        self::markTestIncomplete();
+    }
 }
