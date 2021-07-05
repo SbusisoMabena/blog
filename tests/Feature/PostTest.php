@@ -151,11 +151,32 @@ class PostTest extends TestCase
 
     public function test_edit_does_not_allow_a_user_to_edit_a_post_that_does_not_belong_to_them()
     {
-        self::markTestIncomplete();
+        $this->seed();
+        $user = User::all()->first();
+        $post = $user->post->first();
+        $user2 = User::factory()->create();
+
+        $response = $this->actingAs($user2)
+            ->patch("/post/{$post->slug}",[
+                "title"=>"updated title",
+                "content"=>"updated content"
+            ]);
+
+        $response->assertStatus(403);
     }
 
     public function test_edit_creates_a_post_that_does_not_exist()
     {
-        self::markTestIncomplete();
+        $this->seed();
+        $user = User::all()->first();
+
+        $response = $this->actingAs($user)
+            ->patch("/post/the-post-does-not-exist",[
+                "title"=>"updated title",
+                "content"=>"updated content"
+            ]);
+
+        $response->assertRedirect('/');
+        $response->assertSessionHas(['message'=>"Your post has been created"]);
     }
 }

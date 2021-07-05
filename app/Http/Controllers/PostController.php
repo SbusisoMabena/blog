@@ -98,6 +98,7 @@ class PostController extends Controller
      * @param \Illuminate\Http\Request $request
      * @param string $slug
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function update(Request $request, string $slug)
     {
@@ -108,14 +109,35 @@ class PostController extends Controller
             ]
         );
         $post = Post::where('slug', $slug)->first();
-        $post->title = $validatedRequest['title'];
-        $post->slug = Str::slug($validatedRequest['title']);
-        $post->content = $validatedRequest['content'];
+        if(!isset($post))
+        {
+            $title = $validatedRequest['title'];
+            $content = $validatedRequest['content'];
+            $slug = Str::slug($title, '-');
+            $userId = Auth::user()->id;
 
-        $post->save();
-        $post->refresh();
+            $post = Post::create([
+                'title' => $title,
+                'content' => $content,
+                'slug' => $slug,
+                'user_id' => $userId
+            ]);
 
-        return redirect('/');
+            return redirect('/')->with("message", "Your post has been created");
+        }
+
+        if ($post->user_id === Auth::user()->id) {
+            $post->title = $validatedRequest['title'];
+            $post->slug = Str::slug($validatedRequest['title']);
+            $post->content = $validatedRequest['content'];
+
+            $post->save();
+            $post->refresh();
+
+            return redirect('/')->with("message", "Your post has been updated");
+        }
+
+        return abort(403, "You are not authorised to edit this post");
     }
 
     /**
